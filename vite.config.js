@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import fs from 'fs';
 
 // https://vite.dev/config/
-export default {
-    base: '/supreme-dollop/'
-}
+export default defineConfig({
+  plugins: [react()],
+  base: '/supreme-dollop/',
+});
