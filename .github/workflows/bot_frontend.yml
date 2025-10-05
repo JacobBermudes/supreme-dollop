@@ -5,7 +5,7 @@ name: NodeJS deploy
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
