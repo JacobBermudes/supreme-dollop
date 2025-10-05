@@ -6,7 +6,6 @@ type TgUser = {
   first_name: string;
   last_name?: string;
   username?: string;
-  // ...другие поля Telegram WebApp User
 };
 
 declare global {
@@ -19,7 +18,6 @@ function App() {
   const [user, setUser] = useState<TgUser | null>(null);
 
   useEffect(() => {
-    // Проверяем, что WebApp API доступен
     if (window.Telegram && window.Telegram.WebApp) {
       const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
       if (tgUser) setUser(tgUser);
@@ -36,7 +34,6 @@ function App() {
           <h3>Добро пожаловать, {user.first_name}!</h3>
           <p>ID: {user.id}</p>
           <p>Username: {user.username}</p>
-          {/* Здесь можно запросить ключи с сервера по user.id */}
         </div>
       )}
     </div>
