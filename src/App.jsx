@@ -17,7 +17,7 @@ function App() {
           setUserId(user.id);
           // userId теперь хранится в cookie на сервере
         } else {
-          setAuthError("Ошибка авторизации");
+          setAuthError("Ошибка auth");
         }
       });
   };
