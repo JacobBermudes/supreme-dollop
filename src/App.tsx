@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import './App.css'
+import './App.css';
 
 type TgUser = {
   id: number;
@@ -10,7 +10,13 @@ type TgUser = {
 
 declare global {
   interface Window {
-    Telegram: any;
+    Telegram?: {
+      WebApp?: {
+        initDataUnsafe?: {
+          user?: TgUser;
+        };
+      };
+    };
   }
 }
 
@@ -18,10 +24,9 @@ function App() {
   const [user, setUser] = useState<TgUser | null>(null);
 
   useEffect(() => {
-    if (window.Telegram && window.Telegram.WebApp) {
-      const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
-      if (tgUser) setUser(tgUser);
-    }
+    // Проверяем наличие Telegram WebApp API
+    const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    if (tgUser) setUser(tgUser);
   }, []);
 
   return (
