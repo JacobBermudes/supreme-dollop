@@ -5,7 +5,6 @@ export default function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Ждём, пока Telegram WebApp загрузится
     if (window.Telegram?.WebApp) {
       window.Telegram.WebApp.ready();
       const initData = window.Telegram.WebApp.initDataUnsafe;
