@@ -1,35 +1,43 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import { useEffect, useState } from 'react';
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    // Ждём, пока Telegram WebApp загрузится
+    if (window.Telegram?.WebApp) {
+      window.Telegram.WebApp.ready();
+      const initData = window.Telegram.WebApp.initDataUnsafe;
+      setUser(initData.user || { id: 'Неизвестно', username: 'Гость' });
+    }
+  }, []);
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    window.Telegram.WebApp.showAlert('Скопировано!');
+  };
+
+  if (!user) {
+    return <div>Загрузка...</div>;
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="card">
+      <h2>Привет!</h2>
+      <p>Твой Telegram ID:</p>
+      <div className="id" onClick={() => copyToClipboard(user.id)}>
+        {user.id}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
 
-export default App
+      <p>Твой username:</p>
+      <div className="id" onClick={() => copyToClipboard(user.username || '—')}>
+        @{user.username || 'не указан'}
+      </div>
+
+      <button onClick={() => window.Telegram.WebApp.close()}>
+        Закрыть
+      </button>
+    </div>
+  );
+}
