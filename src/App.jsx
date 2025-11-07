@@ -31,7 +31,7 @@ export default function App() {
         }
 
         const tg_data = await resp.json();
-        setAccData(tg_data)
+        setAccData(tg_data|| { tariff: 'Неизвестно', balance: 'Неизвестно', username: 'Гость' })
       } catch (err) {
           throw new Error(`HTTP Error. ${err.message}`);
       } 
