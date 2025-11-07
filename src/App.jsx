@@ -6,15 +6,11 @@ export default function App() {
   const [accData, setAccData] = useState(null)
 
   useEffect(() => {
+
     if (window.Telegram?.WebApp) {
       window.Telegram.WebApp.ready();
       const initData = window.Telegram.WebApp.initDataUnsafe;
       setUser(initData.user || { id: 'Неизвестно', username: 'Гость' });
-
-      const payload = {
-        uid: 287657335,
-        username: "user.username"
-      };
 
       const sendReq = async () =>{
       try {
@@ -23,7 +19,7 @@ export default function App() {
           headers: {
             'Content-type': 'application/json'
           },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(user)
         });
 
         if (!resp.ok) {
@@ -33,13 +29,12 @@ export default function App() {
         const tg_data = await resp.json();
         setAccData(tg_data|| { tariff: 'Неизвестно', balance: 'Неизвестно', username: 'Гость' })
       } catch (err) {
-          throw new Error(`HTTP Error. ${err.message}`);
+        throw new Error(`HTTP Error. ${err.message}`);
       } 
     };
-
-    sendReq();
-    }
-  }, []);
+  sendReq();
+  };
+} ,[]);
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
@@ -53,14 +48,14 @@ export default function App() {
   return (
     <div className="card">
       <h2>Привет!</h2>
-      <div className="id" onClick={() => copyToClipboard(accData.username || '—')}>
-        @{accData.username || 'не указан'}
+      <div className="id" onClick={() => copyToClipboard(user.username || '—')}>
+        @{user.username || 'не указан'}
       </div>
-      <div className="id" onClick={() => copyToClipboard(accData.balance || '—')}>
-        @{accData.balance || 'Баланс неизвестен'}
+      <div className="id" onClick={() => copyToClipboard(user.username || '—')}>
+        @{user.username || 'Баланс неизвестен'}
       </div>
-      <div className="id" onClick={() => copyToClipboard(accData.tariff || '—')}>
-        @{accData.tariff || 'Тариф неизвестен'}
+      <div className="id" onClick={() => copyToClipboard(user.username || '—')}>
+        @{user.username || 'Тариф неизвестен'}
       </div>
 
       <button onClick={() => window.Telegram.WebApp.close()}>
