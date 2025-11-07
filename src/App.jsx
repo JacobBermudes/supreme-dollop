@@ -9,17 +9,16 @@ export default function App() {
     if (window.Telegram?.WebApp) {
       window.Telegram.WebApp.ready();
       const initData = window.Telegram.WebApp.initDataUnsafe;
+      setUser(initData.user || { id: 'Неизвестно', username: 'Гость' });
 
       const payload = {
-        uid: initData.user.id,
-        username: initData.user.username
+        uid: 287657335,
+        username: "user.username"
       };
-
-      setUser(initData.user || { id: 'Неизвестно', username: 'Гость' });
 
       const sendReq = async () =>{
       try {
-        const resp = await fetch('phunkao.fun/api', {
+        const resp = await fetch('http://phunkao.fun:8008/api', {
           method: 'POST',
           headers: {
             'Content-type': 'application/json'
@@ -38,7 +37,7 @@ export default function App() {
       } 
     };
 
-    sendReq()
+    sendReq();
     }
   }, []);
 
