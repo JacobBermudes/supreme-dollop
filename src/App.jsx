@@ -49,17 +49,16 @@ export default function App() {
   return (
     <div className="card">
       <h2>Привет!</h2>
-      {accData?.message && (
-        <div style={{ whiteSpace: 'pre-line', marginBottom: 20 }}>{accData.message}</div>
-      )}
       <div className="id" onClick={() => copyToClipboard(user.username || '—')}>
         @{user.username || 'не указан'}
       </div>
+      <p>Баланс</p>
       <div className="id" onClick={() => copyToClipboard(user.username || '—')}>
-        @{user.username || 'Баланс неизвестен'}
+        @{accData.balance || 'Баланс неизвестен'}
       </div>
+      <p>Тариф</p>
       <div className="id" onClick={() => copyToClipboard(user.username || '—')}>
-        @{user.username || 'Тариф неизвестен'}
+        @{accData.tariff || 'Тариф неизвестен'}
       </div>
 
       <button onClick={() => window.Telegram.WebApp.close()}>
