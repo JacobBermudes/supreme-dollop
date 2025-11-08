@@ -20,7 +20,7 @@ export default function App() {
             headers: {
               'Content-type': 'application/json'
             },
-            body: JSON.stringify(userObj)
+            body: JSON.stringify(user)
           });
 
           if (!resp.ok) {
