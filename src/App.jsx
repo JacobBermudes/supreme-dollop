@@ -19,15 +19,15 @@ export default function App() {
           headers: {
             'Content-type': 'application/json'
           },
-          body: JSON.stringify(user)
+          body: JSON.stringify({ id: initData.user?.id, username: initData.user?.username })
         });
 
         if (!resp.ok) {
           throw new Error(`HTTP Error. ${resp.status}: ${resp.statusText}`);
         }
 
-        const tg_data = await resp.json();
-        setAccData(tg_data|| { tariff: 'Неизвестно', balance: 'Неизвестно', username: 'Гость' })
+        const data = await resp.json();
+        setAccData(data || { tariff: 'Неизвестно', balance: 'Неизвестно', username: 'Гость', message: '' })
       } catch (err) {
         throw new Error(`HTTP Error. ${err.message}`);
       } 
@@ -48,6 +48,9 @@ export default function App() {
   return (
     <div className="card">
       <h2>Привет!</h2>
+      {accData?.message && (
+        <div style={{ whiteSpace: 'pre-line', marginBottom: 20 }}>{accData.message}</div>
+      )}
       <div className="id" onClick={() => copyToClipboard(user.username || '—')}>
         @{user.username || 'не указан'}
       </div>
