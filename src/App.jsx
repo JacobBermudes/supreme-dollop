@@ -10,31 +10,32 @@ export default function App() {
     if (window.Telegram?.WebApp) {
       window.Telegram.WebApp.ready();
       const initData = window.Telegram.WebApp.initDataUnsafe;
-      setUser(initData.user || { id: 'Неизвестно', username: 'Гость' });
+      const userObj = initData && initData.user ? { id: initData.user.id, username: initData.user.username } : { id: 'Неизвестно', username: 'Гость' };
+      setUser(userObj);
 
       const sendReq = async () =>{
-      try {
-        const resp = await fetch('http://phunkao.fun:8008/api', {
-          method: 'POST',
-          headers: {
-            'Content-type': 'application/json'
-          },
-          body: JSON.stringify({ id: initData.user?.id, username: initData.user?.username })
-        });
+        try {
+          const resp = await fetch('https://phunkao.fun:8008/api', {
+            method: 'POST',
+            headers: {
+              'Content-type': 'application/json'
+            },
+            body: JSON.stringify(userObj)
+          });
 
-        if (!resp.ok) {
-          throw new Error(`HTTP Error. ${resp.status}: ${resp.statusText}`);
-        }
+          if (!resp.ok) {
+            throw new Error(`HTTP Error. ${resp.status}: ${resp.statusText}`);
+          }
 
-        const data = await resp.json();
-        setAccData(data || { tariff: 'Неизвестно', balance: 'Неизвестно', username: 'Гость', message: '' })
-      } catch (err) {
-        throw new Error(`HTTP Error. ${err.message}`);
-      } 
+          const data = await resp.json();
+          setAccData(data || { tariff: 'Неизвестно', balance: 'Неизвестно', username: 'Гость', message: '' })
+        } catch (err) {
+          throw new Error(`HTTP Error. ${err.message}`);
+        } 
+      };
+      sendReq();
     };
-  sendReq();
-  };
-} ,[]);
+  } ,[]);
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
