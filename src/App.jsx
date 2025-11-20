@@ -10,7 +10,7 @@ export default function App() {
     if (window.Telegram?.WebApp) {
       window.Telegram.WebApp.ready();
       const initData = window.Telegram.WebApp.initDataUnsafe;
-      const userObj = initData && initData.user ? { id: initData.user.id, username: initData.user.username } : { id: 'Неизвестно', username: 'Гость' };
+      const userObj = initData && initData.user ? { id: initData.user.id, username: initData.user.username, method: "getInfo", type: "cb", props: "123" } : { id: 'Неизвестно', username: 'Гость' };
       setUser(userObj);
 
       const sendReq = async () =>{
@@ -24,7 +24,7 @@ export default function App() {
           });
 
           if (!resp.ok) {
-            throw new Error(`HTTP Error. ${resp.status}: ${resp.statusText}`);
+            throw new Error(`HTTP Error. OPCODE NOT OK. ${resp.status}: ${resp.statusText}`);
           }
 
           const data = await resp.json();
@@ -53,8 +53,8 @@ export default function App() {
         @{user.username || 'не указан'}
       </div>
       <p>Баланс</p>
-      <div className="id" onClick={() => copyToClipboard(user.username || '—')}>
-        @{user.username || 'Баланс неизвестен'}
+      <div className="id" onClick={() => copyToClipboard(accData.Balance  || '—')}>
+        @{accData.Balance || 'Баланс неизвестен'}
       </div>
       <p>Тариф</p>
       <div className="id" onClick={() => copyToClipboard(user.username || '—')}>
