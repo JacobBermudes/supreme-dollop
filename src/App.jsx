@@ -10,7 +10,7 @@ export default function App() {
     if (window.Telegram?.WebApp) {
       window.Telegram.WebApp.ready();
       const initData = window.Telegram.WebApp.initDataUnsafe;
-      const userObj = initData && initData.user ? { id: initData.user.id, username: initData.user.username } : { id: 'Неизвестно', username: 'Гость' };
+      const userObj = initData && initData.user ? { id: initData.user.id, username: initData.user.username } : { id: '287657335', username: 'Гость' };
       setUser(userObj);
 
       const sendReq = async () =>{
