@@ -54,11 +54,11 @@ export default function App() {
       </div>
       <p>Баланс</p>
       <div className="id" onClick={() => copyToClipboard(user.username || '—')}>
-        @{accData.balance || 'Баланс неизвестен'}
+        @{user.username || 'Баланс неизвестен'}
       </div>
       <p>Тариф</p>
       <div className="id" onClick={() => copyToClipboard(user.username || '—')}>
-        @{accData.tariff || 'Тариф неизвестен'}
+        @{user.username|| 'Тариф неизвестен'}
       </div>
 
       <button onClick={() => window.Telegram.WebApp.close()}>
