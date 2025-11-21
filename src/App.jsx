@@ -95,24 +95,25 @@ export default function App() {
         {accData.balance !== undefined ? accData.balance : 'Баланс неизвестен'}
       </div>
       <p>Тариф</p>
-      {!showTariffSelect ? (
-        <div className="id" style={{cursor:'pointer'}} onClick={handleTariffClick}>
-          {accData.tariff || 'Тариф неизвестен'}
-        </div>
-      ) : (
-        <>
-          <select value={selectedTariff} onChange={handleTariffChange} style={{marginBottom: 10}}>
+      <div className="id" style={{cursor:'pointer', marginBottom: showTariffSelect ? 0 : 20}} onClick={handleTariffClick}>
+        {accData.tariff || 'Тариф неизвестен'}
+      </div>
+      {showTariffSelect && (
+        <div style={{marginBottom: 20}}>
+          <select value={selectedTariff} onChange={handleTariffChange} style={{marginBottom: 10, width: '100%'}}>
             {tariffs.map(tariff => (
               <option key={tariff} value={tariff}>{tariff}</option>
             ))}
           </select>
-          {tariffChanged && (
-            <button onClick={handleTariffSave} disabled={loading} style={{marginLeft: 10}}>
-              {loading ? 'Сохраняем...' : 'Сохранить тариф'}
-            </button>
-          )}
-          <button onClick={() => setShowTariffSelect(false)} style={{marginLeft: 10}}>Отмена</button>
-        </>
+          <div>
+            {tariffChanged && (
+              <button onClick={handleTariffSave} disabled={loading} style={{marginRight: 10}}>
+                {loading ? 'Сохраняем...' : 'Сохранить тариф'}
+              </button>
+            )}
+            <button onClick={() => setShowTariffSelect(false)}>Отмена</button>
+          </div>
+        </div>
       )}
       <button onClick={() => window.Telegram.WebApp.close()} style={{marginTop: 20}}>
         Закрыть
