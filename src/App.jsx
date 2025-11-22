@@ -95,26 +95,28 @@ export default function App() {
         {accData.balance !== undefined ? accData.balance : 'Баланс неизвестен'}
       </div>
       <p>Тариф</p>
-      <div className="id" style={{cursor:'pointer', marginBottom: showTariffSelect ? 0 : 20}} onClick={handleTariffClick}>
-        {accData.tariff || 'Тариф неизвестен'}
-      </div>
-      {showTariffSelect && (
-        <div style={{marginBottom: 20}}>
-          <select value={selectedTariff} onChange={handleTariffChange} style={{marginBottom: 10, width: '100%'}}>
-            {tariffs.map(tariff => (
-              <option key={tariff} value={tariff}>{tariff}</option>
-            ))}
-          </select>
-          <div>
-            {tariffChanged && (
-              <button onClick={handleTariffSave} disabled={loading} style={{marginRight: 10}}>
-                {loading ? 'Сохраняем...' : 'Сохранить тариф'}
-              </button>
-            )}
-            <button onClick={() => setShowTariffSelect(false)}>Отмена</button>
-          </div>
+      <div style={{position:'relative', display:'inline-block', width:'100%'}}>
+        <div className="id" style={{cursor:'pointer', marginBottom: showTariffSelect ? 0 : 20, borderRadius: showTariffSelect ? '20px 20px 0 0' : '20px', boxShadow: showTariffSelect ? '0 4px 12px rgba(34,158,217,0.08)' : '', borderBottom: showTariffSelect ? '1px solid #229ED9' : 'none'}} onClick={handleTariffClick}>
+          {accData.tariff || 'Тариф неизвестен'}
         </div>
-      )}
+        {showTariffSelect && (
+          <div style={{position:'absolute', left:0, right:0, top:'100%', zIndex:10, background:'#fff', borderRadius:'0 0 20px 20px', boxShadow:'0 8px 24px rgba(34,158,217,0.12)', border:'1px solid #229ED9', borderTop:'none', padding:'16px 12px'}}>
+            <select value={selectedTariff} onChange={handleTariffChange} style={{width:'100%', padding:'10px', borderRadius:'8px', border:'1px solid #229ED9', fontSize:'16px', marginBottom:'12px', background:'#f7fafd'}}>
+              {tariffs.map(tariff => (
+                <option key={tariff} value={tariff}>{tariff}</option>
+              ))}
+            </select>
+            <div style={{display:'flex', gap:'10px'}}>
+              {tariffChanged && (
+                <button onClick={handleTariffSave} disabled={loading} style={{flex:1, background:'#229ED9', color:'#fff', borderRadius:'8px', border:'none', padding:'10px 0', fontWeight:'bold'}}>
+                  {loading ? 'Сохраняем...' : 'Сохранить тариф'}
+                </button>
+              )}
+              <button onClick={() => setShowTariffSelect(false)} style={{flex:1, background:'#eee', color:'#333', borderRadius:'8px', border:'none', padding:'10px 0', fontWeight:'bold'}}>Отмена</button>
+            </div>
+          </div>
+        )}
+      </div>
       <button onClick={() => window.Telegram.WebApp.close()} style={{marginTop: 20}}>
         Закрыть
       </button>
