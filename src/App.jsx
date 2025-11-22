@@ -100,12 +100,28 @@ export default function App() {
           {accData.tariff || 'Тариф неизвестен'}
         </div>
         {showTariffSelect && (
-          <div style={{position:'absolute', left:0, right:0, top:'100%', zIndex:10, background:'#fff', borderRadius:'0 0 20px 20px', boxShadow:'0 8px 24px rgba(34,158,217,0.12)', border:'1px solid #229ED9', borderTop:'none', padding:'16px 12px'}}>
-            <select value={selectedTariff} onChange={handleTariffChange} style={{width:'100%', padding:'10px', borderRadius:'8px', border:'1px solid #229ED9', fontSize:'16px', marginBottom:'12px', background:'#f7fafd'}}>
+          <div style={{position:'absolute', left:0, right:0, top:'100%', zIndex:10, background:'#fff', borderRadius:'0 0 20px 20px', boxShadow:'0 8px 24px rgba(34,158,217,0.12)', border:'1px solid #229ED9', borderTop:'none', padding:'16px 12px', width:'100%'}}>
+            <div style={{display:'flex', flexDirection:'column', gap:'10px', marginBottom:'12px'}}>
               {tariffs.map(tariff => (
-                <option key={tariff} value={tariff}>{tariff}</option>
+                <button
+                  key={tariff}
+                  onClick={() => { setSelectedTariff(tariff); setTariffChanged(tariff !== accData.tariff); }}
+                  style={{
+                    width:'100%',
+                    padding:'12px 0',
+                    borderRadius:'8px',
+                    border: tariff === selectedTariff ? '2px solid #229ED9' : '1px solid #eee',
+                    background: tariff === selectedTariff ? '#229ED9' : '#f7fafd',
+                    color: tariff === selectedTariff ? '#fff' : '#333',
+                    fontWeight:'bold',
+                    fontSize:'16px',
+                    cursor:'pointer'
+                  }}
+                >
+                  {tariff}
+                </button>
               ))}
-            </select>
+            </div>
             <div style={{display:'flex', gap:'10px'}}>
               {tariffChanged && (
                 <button onClick={handleTariffSave} disabled={loading} style={{flex:1, background:'#229ED9', color:'#fff', borderRadius:'8px', border:'none', padding:'10px 0', fontWeight:'bold'}}>
