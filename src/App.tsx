@@ -143,7 +143,6 @@ const App = () => {
   const balanceNum = Number(apiData?.balance) || 0;
   const dayOfMonth = new Date().getDate();
   const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
-  // compute value = balance divided by current day number / days in month
   const perDay = dayOfMonth > 0 ? balanceNum / dayOfMonth : 0;
   const perMonth = daysInMonth > 0 ? balanceNum / daysInMonth : 0;
 
@@ -160,8 +159,8 @@ const App = () => {
                 </div>
 
                 <div style={{ display: 'flex', gap: 16, justifyContent: 'center', marginTop: 8, marginBottom: 12 }}>
-                  <Circle value={perDay} label={`Сервер Стандарт`} />
-                  <Circle value={perMonth} label={`Сервер Премиум`} />
+                  <Circle value={100 - 21} label={`Сервер Стандарт`} />
+                  <Circle value={100 - 46} label={`Сервер Премиум`} />
                 </div>
 
                 <div style={{ textAlign: 'center', color: '#666', fontSize: 13 }}>
