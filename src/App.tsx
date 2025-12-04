@@ -108,8 +108,7 @@ const App = () => {
     const stroke = 8;
     const normalizedRadius = radius - stroke / 2;
     const circumference = normalizedRadius * 2 * Math.PI;
-    const balanceNum = Number(apiData?.balance) || 0;
-    const percent = balanceNum > 0 ? Math.max(0, Math.min(1, value / balanceNum)) : 0;
+    const percent = Math.max(0, Math.min(1, value / 100));
     const strokeDashoffset = circumference - percent * circumference;
 
     return (
@@ -117,7 +116,7 @@ const App = () => {
         <svg height={radius * 2} width={radius * 2}>
           <g transform={`translate(${radius}, ${radius})`}>
             <circle
-              r={normalizedRadius}
+              r= {normalizedRadius}
               fill="transparent"
               stroke="#eee"
               strokeWidth={stroke}
@@ -144,8 +143,9 @@ const App = () => {
   const balanceNum = Number(apiData?.balance) || 0;
   const dayOfMonth = new Date().getDate();
   const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
-  const perDay = 100 - dayOfMonth;
-  const perMonth = 100 - daysInMonth;
+  // compute value = balance divided by current day number / days in month
+  const perDay = dayOfMonth > 0 ? balanceNum / dayOfMonth : 0;
+  const perMonth = daysInMonth > 0 ? balanceNum / daysInMonth : 0;
 
   return (
     <AppRoot>
