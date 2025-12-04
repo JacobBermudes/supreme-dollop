@@ -26,24 +26,23 @@ declare global {
 
 const App = () => {
   const [user, setUser] = useState<TelegramUser | null>(null);
-  const [balance, setBalance] = useState<string | number>('—');
-  const [tariff, setTariff] = useState<string>('—');
 
   useEffect(() => {
-    // Инициализируем WebApp и получаем данные пользователя
+    // Инициализируем WebApp и получаем только данные пользователя из Telegram
     if (window.Telegram?.WebApp) {
-      window.Telegram.WebApp.ready();
       const webApp = window.Telegram.WebApp;
+      webApp.ready();
+
       const initData = webApp.initDataUnsafe;
+      const telegramUser = initData?.user;
 
-      if (initData?.user) {
-        setUser(initData.user);
+      if (telegramUser) {
+        setUser(telegramUser);
       }
-
-      // Здесь можно добавить fetch к вашему API для получения баланса и тарифа
-      // Пока используем mock-данные для локального тестирования
-      setBalance('150.00');
-      setTariff('Премиум');
+    } else {
+      // Для локального тестирования (вне Telegram)
+      console.warn('WebApp не инициализирован. Используем mock-данные.');
+      setUser({ id: 123456, username: 'test_user', first_name: 'Test' });
     }
   }, []);
 
@@ -67,19 +66,19 @@ const App = () => {
 
             <div style={{ marginBottom: '16px' }}>
               <Text style={{ fontSize: '14px', color: '#999', marginBottom: '4px' }}>
-                Баланс
+                ID
               </Text>
               <Text weight="2" style={{ fontSize: '18px' }}>
-                {balance}
+                {user?.id || '—'}
               </Text>
             </div>
 
             <div style={{ marginBottom: '16px' }}>
               <Text style={{ fontSize: '14px', color: '#999', marginBottom: '4px' }}>
-                Тариф
+                Имя
               </Text>
               <Text weight="2" style={{ fontSize: '18px' }}>
-                {tariff}
+                {user?.first_name || '—'} {user?.last_name || ''}
               </Text>
             </div>
 
