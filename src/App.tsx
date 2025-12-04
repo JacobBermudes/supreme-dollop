@@ -136,7 +136,6 @@ const App = () => {
         </svg>
         <div style={{ marginTop: 8, textAlign: 'center' }}>
           <Text style={{ fontSize: 14 }}>{label}</Text>
-          <Text weight="2" style={{ display: 'block' }}>{Number(value).toFixed(2)}</Text>
         </div>
       </div>
     );
@@ -145,8 +144,8 @@ const App = () => {
   const balanceNum = Number(apiData?.balance) || 0;
   const dayOfMonth = new Date().getDate();
   const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
-  const perDay = dayOfMonth > 0 ? balanceNum / dayOfMonth : 0;
-  const perMonth = daysInMonth > 0 ? balanceNum / daysInMonth : 0;
+  const perDay = 100 - dayOfMonth;
+  const perMonth = 100 - daysInMonth;
 
   return (
     <AppRoot>
