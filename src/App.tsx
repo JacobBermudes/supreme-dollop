@@ -33,7 +33,6 @@ const App = () => {
   const [apiData, setApiData] = useState<ApiResponse | null>(null);
 
   useEffect(() => {
-    // Инициализируем WebApp и получаем данные пользователя из Telegram
     const isInTelegram = window.Telegram?.WebApp?.ready !== undefined;
     console.log('🔍 isInTelegram:', isInTelegram);
     
@@ -44,13 +43,12 @@ const App = () => {
       const initData = webApp.initDataUnsafe;
       const telegramUser = initData?.user;
       
-      console.log('📞 Telegram initData:', initData);
-      console.log('👤 Telegram user:', telegramUser);
+      console.log('Telegram initData:', initData);
+      console.log('Telegram user:', telegramUser);
 
       if (telegramUser) {
         setUser(telegramUser);
 
-        // Отправляем POST-запрос на API с данными от Telegram
         const fetchApiData = async () => {
           try {
             const response = await fetch('https://phunkao.fun:8008/api', {
@@ -76,8 +74,8 @@ const App = () => {
 
         fetchApiData();
       } else {
-        // Даже если WebApp инициализирована, но нет user данных - используем mock
-        console.log('⚠️ WebApp есть, но user пуст. Используем mock-данные.');
+        // mock
+        console.log('WebApp есть, но user пуст. Используем mock-данные.');
         const mockUser = { id: 287657335, username: 'mg' };
         setUser(mockUser);
         
@@ -90,12 +88,10 @@ const App = () => {
         });
       }
     } else {
-      // Для локального тестирования (вне Telegram) - npm run dev
-      console.log('📱 WebApp не обнаружена. Загружаем mock-данные для разработки...');
+      console.log('WebApp не обнаружена. Загружаем mock-данные для разработки...');
       const mockUser = { id: 287657335, username: 'mg' };
       setUser(mockUser);
       
-      // Имитируем ответ от API
       setApiData({
         username: 'mg',
         balance: 150.50,
@@ -105,24 +101,73 @@ const App = () => {
       });
     }
   }, []);
+  
+  // Small circular stat component
+  const Circle = ({ value, label }: { value: number; label: string }) => {
+    const radius = 36;
+    const stroke = 8;
+    const normalizedRadius = radius - stroke / 2;
+    const circumference = normalizedRadius * 2 * Math.PI;
+    const balanceNum = Number(apiData?.balance) || 0;
+    const percent = balanceNum > 0 ? Math.max(0, Math.min(1, value / balanceNum)) : 0;
+    const strokeDashoffset = circumference - percent * circumference;
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 120 }}>
+        <svg height={radius * 2} width={radius * 2}>
+          <g transform={`translate(${radius}, ${radius})`}>
+            <circle
+              r={normalizedRadius}
+              fill="transparent"
+              stroke="#eee"
+              strokeWidth={stroke}
+            />
+            <circle
+              r={normalizedRadius}
+              fill="transparent"
+              stroke="#229ED9"
+              strokeWidth={stroke}
+              strokeDasharray={`${circumference} ${circumference}`}
+              strokeDashoffset={strokeDashoffset}
+              strokeLinecap="round"
+              transform={`rotate(-90)`}
+            />
+          </g>
+        </svg>
+        <div style={{ marginTop: 8, textAlign: 'center' }}>
+          <Text style={{ fontSize: 14 }}>{label}</Text>
+          <Text weight="2" style={{ display: 'block' }}>{Number(value).toFixed(2)}</Text>
+        </div>
+      </div>
+    );
+  };
+
+  const balanceNum = Number(apiData?.balance) || 0;
+  const dayOfMonth = new Date().getDate();
+  const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+  const perDay = dayOfMonth > 0 ? balanceNum / dayOfMonth : 0;
+  const perMonth = daysInMonth > 0 ? balanceNum / daysInMonth : 0;
 
   return (
     <AppRoot>
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', padding: '16px' }}>
         <Card style={{ width: '100%', maxWidth: '480px' }}>
-          <div style={{ padding: '16px' }}>
+          <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
             {apiData && (
               <div style={{ marginBottom: '16px' }}>
-                <div style={{ marginBottom: '8px' }}>
-                  <Text variant="headline">Привет, {apiData.username || 'пользователь'}!</Text>
+                <div style={{ marginBottom: '8px', textAlign: 'center' }}>
+                  <Text style={{ fontSize: '20px', fontWeight: 'bold', textAlign: 'center' }}>Привет, {apiData.username}!</Text>
                 </div>
-                <div style={{ marginBottom: '8px' }}>
-                  <Text>Ваш тариф: {apiData.tariff || 'Неизвестно'}</Text>
+
+                <div style={{ display: 'flex', gap: 16, justifyContent: 'center', marginTop: 8, marginBottom: 12 }}>
+                  <Circle value={perDay} label={`Сервер Стандарт`} />
+                  <Circle value={perMonth} label={`Сервер Премиум`} />
                 </div>
-                <pre style={{ fontSize: '12px', overflow: 'auto', background: '#f5f5f5', padding: '8px', borderRadius: '4px' }}>
-                  {JSON.stringify(apiData, null, 2)}
-                </pre>
+
+                <div style={{ textAlign: 'center', color: '#666', fontSize: 13 }}>
+                  <Text>Баланс: {Number(apiData.balance).toFixed(2)}</Text>
+                </div>
               </div>
             )}
 
