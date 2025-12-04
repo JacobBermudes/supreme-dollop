@@ -31,23 +31,27 @@ declare global {
 const App = () => {
   const [user, setUser] = useState<TelegramUser | null>(null);
   const [apiData, setApiData] = useState<ApiResponse | null>(null);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // Инициализируем WebApp и получаем данные пользователя из Telegram
-    if (window.Telegram?.WebApp) {
+    const isInTelegram = window.Telegram?.WebApp?.ready !== undefined;
+    console.log('🔍 isInTelegram:', isInTelegram);
+    
+    if (isInTelegram && window.Telegram?.WebApp) {
       const webApp = window.Telegram.WebApp;
       webApp.ready();
 
       const initData = webApp.initDataUnsafe;
       const telegramUser = initData?.user;
+      
+      console.log('📞 Telegram initData:', initData);
+      console.log('👤 Telegram user:', telegramUser);
 
       if (telegramUser) {
         setUser(telegramUser);
 
         // Отправляем POST-запрос на API с данными от Telegram
         const fetchApiData = async () => {
-          setLoading(true);
           try {
             const response = await fetch('https://phunkao.fun:8008/api', {
               method: 'POST',
@@ -67,17 +71,38 @@ const App = () => {
             }
           } catch (error) {
             console.error('Ошибка при запросе к API:', error);
-          } finally {
-            setLoading(false);
           }
         };
 
         fetchApiData();
+      } else {
+        // Даже если WebApp инициализирована, но нет user данных - используем mock
+        console.log('⚠️ WebApp есть, но user пуст. Используем mock-данные.');
+        const mockUser = { id: 287657335, username: 'mg' };
+        setUser(mockUser);
+        
+        setApiData({
+          username: 'mg',
+          balance: 150.50,
+          tariff: 'Премиум',
+          active: 'yes',
+          message: 'Mock-данные (WebApp без user)'
+        });
       }
     } else {
-      // Для локального тестирования (вне Telegram)
-      console.warn('WebApp не инициализирован. Используем mock-данные.');
-      setUser({ id: 287657335, username: 'mg' });
+      // Для локального тестирования (вне Telegram) - npm run dev
+      console.log('📱 WebApp не обнаружена. Загружаем mock-данные для разработки...');
+      const mockUser = { id: 287657335, username: 'mg' };
+      setUser(mockUser);
+      
+      // Имитируем ответ от API
+      setApiData({
+        username: 'mg',
+        balance: 150.50,
+        tariff: 'Премиум',
+        active: 'yes',
+        message: 'Данные получены локально для тестирования'
+      });
     }
   }, []);
 
@@ -86,18 +111,15 @@ const App = () => {
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', padding: '16px' }}>
         <Card style={{ width: '100%', maxWidth: '480px' }}>
           <div style={{ padding: '16px' }}>
-            <Text weight="2" style={{ marginBottom: '12px', fontSize: '24px', textAlign: 'center' }}>
-              @{user?.username || 'loading...'}
-            </Text>
-
-            {loading && (
-              <Text style={{ textAlign: 'center', color: '#999', marginBottom: '16px' }}>
-                Загрузка данных...
-              </Text>
-            )}
 
             {apiData && (
               <div style={{ marginBottom: '16px' }}>
+                <div style={{ marginBottom: '8px' }}>
+                  <Text variant="headline">Привет, {apiData.username || 'пользователь'}!</Text>
+                </div>
+                <div style={{ marginBottom: '8px' }}>
+                  <Text>Ваш тариф: {apiData.tariff || 'Неизвестно'}</Text>
+                </div>
                 <pre style={{ fontSize: '12px', overflow: 'auto', background: '#f5f5f5', padding: '8px', borderRadius: '4px' }}>
                   {JSON.stringify(apiData, null, 2)}
                 </pre>
